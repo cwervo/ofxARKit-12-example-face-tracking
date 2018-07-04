@@ -1,11 +1,9 @@
-# ofxARKit + ofxOSC
+# ofxARKit Face Tracking Example!
 
-Sending face mesh data from ARKit over OSC! :)
+Requires [iOS OpenFrameworks 0.10.0](https://openframeworks.cc/download/) & [ofxARKit](https://github.com/sortofsleepy/ofxARKit).
 
----
+This example includes:
 
-Requires [iOS OpenFrameworks 0.10.0](https://openframeworks.cc/download/) & [ofxARKit](https://github.com/sortofsleepy/ofxARKit)
-
-Works with [this MacOS Receiver](https://github.com/AndresCuervo/ofxARKit-face-receiver)
-
-Need to check receiver's IP address (WiFi LAN IP not whatsmyip) & type it into the text box!
+| two modes you can tap to change  | face normals |
+| ------------- | ------------- |
+| ![Example of ARKit normals](example-GIFs/adding_normals.gif) | ![Example of mode switching](example-GIFs/switching_modes.gif)  |
