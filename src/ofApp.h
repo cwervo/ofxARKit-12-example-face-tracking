@@ -64,9 +64,9 @@ public:
     }
     
     ofVec3f calculateCenter(ofMeshFace *face) {
-        int lastPointIndex = 3;
+        int lastPointIndex{3};
         ofVec3f result;
-        for (unsigned int i=0; i < 3; i++){
+        for (unsigned int i = 0; i < 3; i++){
             result += face->getVertex(i);
         }
         result /= lastPointIndex;
@@ -76,5 +76,7 @@ public:
     
     bool bDrawNormals{false};
     const float normalSize{0.01};
-    void drawFacemeshNormals(ofMesh mesh);
+    void drawFaceMeshNormals(ofMesh mesh);
+    
+    void printInfo();
 };

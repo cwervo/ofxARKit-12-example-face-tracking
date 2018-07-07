@@ -6,4 +6,4 @@ This example includes:
 
 | two modes you can tap to change  | face normals |
 | ------------- | ------------- |
-| ![Example of mode switching](example-GIFs/switching_modes.gif)  | ![Example of ARKit normals](example-GIFs/adding_normals.gif) |
+| ![Example of mode switching](https://media.giphy.com/media/tZqtAFwqcT8Y7HjyFR/giphy.gif)  | ![Example of ARKit normals](http://media.giphy.com/media/PPW3q1LHwT36ko8IFl/giphy.gif) |

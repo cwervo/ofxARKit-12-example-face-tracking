@@ -50,7 +50,7 @@ void drawEachTriangle(ofMesh faceMesh) {
     ofPopStyle();
 }
 
-void drawFaceMesh(ofMesh faceMesh) {
+void drawFaceCircles(ofMesh faceMesh) {
     ofPushStyle();
     ofSetColor(0, 0, 255);
     auto verts = faceMesh.getVertices();
@@ -60,7 +60,7 @@ void drawFaceMesh(ofMesh faceMesh) {
     ofPopStyle();
 }
 
-void ofApp::drawFacemeshNormals(ofMesh mesh) {
+void ofApp::drawFaceMeshNormals(ofMesh mesh) {
     vector<ofMeshFace> faces = mesh.getUniqueFaces();
     ofMeshFace face;
     ofVec3f c, n;
@@ -73,6 +73,14 @@ void ofApp::drawFacemeshNormals(ofMesh mesh) {
         ofDrawLine(c.x, c.y, c.z, c.x+n.x*normalSize, c.y+n.y*normalSize, c.z+n.z*normalSize);
     }
     ofPopStyle();
+}
+
+void ofApp::printInfo() {
+    std::string infoString = std::string("Current mode: ") + std::string(bDrawTriangles ? "mesh triangles" : "circles");
+    infoString += "\nNormals: " + std::string(bDrawNormals ? "on" : "off");
+    infoString += std::string("\n\nTap right side of the screen to change drawing mode.");
+    infoString += "\nTap left side of the screen to toggle normals.";
+    verandaFont.drawString(infoString, 10, ofGetHeight() * 0.85);
 }
 
 //--------------------------------------------------------------
@@ -98,11 +106,11 @@ void ofApp::draw() {
         if (bDrawTriangles) {
             drawEachTriangle(mesh);
         } else {
-            drawFaceMesh(mesh);
+            drawFaceCircles(mesh);
         }
         
         if (bDrawNormals) {
-            drawFacemeshNormals(mesh);
+            drawFaceMeshNormals(mesh);
         }
 
         mesh.clear();
@@ -111,10 +119,7 @@ void ofApp::draw() {
     }
     camera.end();
     
-    std::string infoString = std::string("Tap right side of the screen to change drawing mode.\nCurrent mode: ");
-    infoString += std::string(bDrawTriangles ? "mesh triangles" : "circles");
-    infoString += "\nTap left side of the screen to toggle normals.";
-    verandaFont.drawString(infoString, 10, ofGetHeight() * 0.9);
+    printInfo();
 }
 
 void ofApp::exit() {}
