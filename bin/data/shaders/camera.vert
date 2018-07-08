@@ -1,4 +1,3 @@
-
 // basic full screen shader
 attribute vec2 position;
 varying vec2 vUv;
