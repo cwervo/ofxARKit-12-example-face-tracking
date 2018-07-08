@@ -51,7 +51,10 @@ void drawEachTriangle(ofMesh faceMesh, float smileValue = 1) {
     const int uniqueFacesSize = uniqueFaces.size();
     for (int i = 0; i < uniqueFacesSize; ++i) {
         auto face = uniqueFaces[i];
-        ofSetColor(ofColor::fromHsb(ofRandom(50), abs(sin(smileValue)) * 255, abs(cos(smileValue)) * 255));
+        // Three possible ways to color the face, try changing it up!
+        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue) * ofRandomuf(), 225, 200));
+//        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, 255 * ofNormalize(i, 0, uniqueFacesSize)));
+//        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, abs(face.getVertex(0).z) * 10 * 255));
         ofDrawTriangle(face.getVertex(0), face.getVertex(1), face.getVertex(2));
     }
     ofPopStyle();
@@ -132,10 +135,6 @@ void ofApp::draw() {
 //            ofSetColor(ofColor::red);
 //            ofDrawCircle(face.getLookAtPoint(), 0.1);
 //            ofPopStyle();
-//            glm::mat4 bbb = glm::make_mat4(face.raw.leftEyeTransform);
-////            ofMultMatrix(face.raw.leftEyeTransform);
-//            ofDrawCircle(0, 0, 1);
-//            ofPopMatrix();
         }
         
         smileValue = face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) + face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * 0.5;
