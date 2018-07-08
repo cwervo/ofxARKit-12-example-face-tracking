@@ -41,18 +41,25 @@ void ofApp::update(){
     processor->updateFaces();
 }
 
-void drawEachTriangle(ofMesh faceMesh) {
+float smileValueTo255(float smileValue) {
+    return ofMap(smileValue, -1.5, 1.5, 0, 255);
+}
+
+void drawEachTriangle(ofMesh faceMesh, float smileValue = 1) {
     ofPushStyle();
-    for (auto face : faceMesh.getUniqueFaces()) {
-        ofSetColor(ofColor::fromHsb(ofRandom(255), 255, 255));
+    const auto uniqueFaces = faceMesh.getUniqueFaces();
+    const int uniqueFacesSize = uniqueFaces.size();
+    for (int i = 0; i < uniqueFacesSize; ++i) {
+        auto face = uniqueFaces[i];
+        ofSetColor(ofColor::fromHsb(ofRandom(50), abs(sin(smileValue)) * 255, abs(cos(smileValue)) * 255));
         ofDrawTriangle(face.getVertex(0), face.getVertex(1), face.getVertex(2));
     }
     ofPopStyle();
 }
 
-void drawFaceCircles(ofMesh faceMesh) {
+void drawFaceCircles(ofMesh faceMesh, float smileValue = 1) {
     ofPushStyle();
-    ofSetColor(0, 0, 255);
+    ofSetColor(0, 0, smileValueTo255(smileValue));
     auto verts = faceMesh.getVertices();
     for (int i = 0; i < verts.size(); ++i){
         ofDrawCircle(verts[i] * ofVec3f(1, 1, 1), 0.001);
@@ -69,8 +76,9 @@ void ofApp::drawFaceMeshNormals(ofMesh mesh) {
     for(unsigned int i = 0; i < faces.size(); i++){
         face = faces[i];
         c = calculateCenter(&face);
+        float absoluteSmileValue = abs(smileValue);
         n = face.getFaceNormal();
-        ofDrawLine(c.x, c.y, c.z, c.x+n.x*normalSize, c.y+n.y*normalSize, c.z+n.z*normalSize);
+        ofDrawLine(c, (c * 1.03) + (n * normalSize * absoluteSmileValue * 0.8));
     }
     ofPopStyle();
 }
@@ -80,6 +88,7 @@ void ofApp::printInfo() {
     infoString += "\nNormals: " + std::string(bDrawNormals ? "on" : "off");
     infoString += std::string("\n\nTap right side of the screen to change drawing mode.");
     infoString += "\nTap left side of the screen to toggle normals.";
+//    infoString += "\n smile value: " + ofToString(smileValue);
     verandaFont.drawString(infoString, 10, ofGetHeight() * 0.85);
 }
 
@@ -104,9 +113,9 @@ void ofApp::draw() {
         mesh.addIndices(face.indices);
         
         if (bDrawTriangles) {
-            drawEachTriangle(mesh);
+            drawEachTriangle(mesh, smileValue);
         } else {
-            drawFaceCircles(mesh);
+            drawFaceCircles(mesh, smileValue);
         }
         
         if (bDrawNormals) {
@@ -116,6 +125,24 @@ void ofApp::draw() {
         mesh.clear();
         
         ofPopMatrix();
+        
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.0")) {
+//            ofLog() << "lookAtPoint: " << ofToString(face.getLookAtPoint());
+//            ofPushStyle();
+//            ofSetColor(ofColor::red);
+//            ofDrawCircle(face.getLookAtPoint(), 0.1);
+//            ofPopStyle();
+//            glm::mat4 bbb = glm::make_mat4(face.raw.leftEyeTransform);
+////            ofMultMatrix(face.raw.leftEyeTransform);
+//            ofDrawCircle(0, 0, 1);
+//            ofPopMatrix();
+        }
+        
+        smileValue = face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) + face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * 0.5;
+        
+//        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.0")) {
+//            tongueValue = face.getBlendShape(ARBlendShapeLocationTongueOut);
+//        }
     }
     camera.end();
     

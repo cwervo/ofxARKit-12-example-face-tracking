@@ -4,6 +4,10 @@
 #include "ofxARKit.h"
 #include "calcNormals.h"
 
+// From: https://stackoverflow.com/a/7848772
+// More macros are defined there, if needed.
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 class ofApp : public ofxiOSApp {
     
 public:
@@ -79,4 +83,9 @@ public:
     void drawFaceMeshNormals(ofMesh mesh);
     
     void printInfo();
+    
+    ARObjects::FaceAnchorObject* faceAnchor;
+    ARFaceAnchor* faceAnchorPointer;
+    float smileValue{0};
+//    float tongueValue{-10};
 };
