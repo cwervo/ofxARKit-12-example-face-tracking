@@ -95,6 +95,40 @@ void ofApp::printInfo() {
     verandaFont.drawString(infoString, 10, ofGetHeight() * 0.85);
 }
 
+void ofApp::drawEyeOrbs(FaceAnchorObject& face)
+{
+    glm::vec4 leftPupil{0, 0, 0, 1};
+    glm::vec4 rightPupil{0, 0, 0, 1};
+    
+    glm::vec4 leftDirection{0, 0, .2, 1};
+    glm::vec4 rightDirection{0, 0, .2, 1};
+    
+    const auto leftEyeMat = ARCommon::toGlmMat4(face.raw.leftEyeTransform);
+    leftPupil = leftEyeMat * leftPupil;
+    leftDirection = leftEyeMat * leftDirection;
+    
+    const auto rightEyeMat = ARCommon::toGlmMat4(face.raw.rightEyeTransform);
+    rightPupil = rightEyeMat * rightPupil;
+    rightDirection = rightEyeMat * rightDirection;
+    
+    auto vec4to3 = [](const glm::vec4& in)->glm::vec3
+    {
+        return glm::vec3{in.x, in.y, in.z};
+    };
+    
+    ofSetColor(ofColor::red);
+    ofDrawLine(vec4to3(leftPupil), vec4to3(leftDirection));
+    ofDrawLine(vec4to3(rightPupil), vec4to3(rightDirection));
+    
+    double tongueValue = face.getBlendShape(ARBlendShapeLocationTongueOut) * 255.0;
+    
+    ofSetColor(ofColor(tongueValue, 1.0 - tongueValue, 0));
+    const double leftSphereSize = face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) * .02;
+    const double rightSphereSize = face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * .02;
+    ofDrawSphere(leftDirection, leftSphereSize);
+    ofDrawSphere(rightDirection, rightSphereSize);
+}
+
 //--------------------------------------------------------------
 void ofApp::draw() {
     
@@ -107,7 +141,6 @@ void ofApp::draw() {
     for (auto & face : processor->getFaces()){
         ofFill();
         ofMatrix4x4 temp = ARCommon::toMat4(face.raw.transform);
-
         ofPushMatrix();
         ofMultMatrix(temp);
         
@@ -124,8 +157,10 @@ void ofApp::draw() {
         if (bDrawNormals) {
             drawFaceMeshNormals(mesh);
         }
-
+        
         mesh.clear();
+        
+        drawEyeOrbs(face);
         
         ofPopMatrix();
         
@@ -136,16 +171,8 @@ void ofApp::draw() {
 //            ofDrawCircle(face.getLookAtPoint(), 0.1);
 //            ofPopStyle();
         }
-        
-        smileValue = face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) + face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * 0.5;
-        
-//        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.0")) {
-//            tongueValue = face.getBlendShape(ARBlendShapeLocationTongueOut);
-//        }
     }
     camera.end();
-    
-    printInfo();
 }
 
 void ofApp::exit() {}

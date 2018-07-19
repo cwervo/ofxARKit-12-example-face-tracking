@@ -21,6 +21,8 @@ public:
     void draw();
     void exit();
     
+    void drawEyeOrbs(FaceAnchorObject& face);
+    
     void touchDown(ofTouchEventArgs &touch);
     void touchMoved(ofTouchEventArgs &touch);
     void touchUp(ofTouchEventArgs &touch);
@@ -86,6 +88,6 @@ public:
     
     ARObjects::FaceAnchorObject* faceAnchor;
     ARFaceAnchor* faceAnchorPointer;
-    float smileValue{0};
-//    float tongueValue{-10};
+    double smileValue{0};
+//    double tongueValue{-10};
 };
