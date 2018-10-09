@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "example-face-tracking.app"
-               BlueprintName = "example-face-tracking"
-               ReferencedContainer = "container:example-face-tracking.xcodeproj">
+               BuildableName = "ofxARKit-12-example-face-tracking.app"
+               BlueprintName = "ofxARKit-12-example-face-tracking"
+               ReferencedContainer = "container:ofxARKit-12-example-face-tracking.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "example-face-tracking.app"
-            BlueprintName = "example-face-tracking"
-            ReferencedContainer = "container:example-face-tracking.xcodeproj">
+            BuildableName = "ofxARKit-12-example-face-tracking.app"
+            BlueprintName = "ofxARKit-12-example-face-tracking"
+            ReferencedContainer = "container:ofxARKit-12-example-face-tracking.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "example-face-tracking.app"
-            BlueprintName = "example-face-tracking"
-            ReferencedContainer = "container:example-face-tracking.xcodeproj">
+            BuildableName = "ofxARKit-12-example-face-tracking.app"
+            BlueprintName = "ofxARKit-12-example-face-tracking"
+            ReferencedContainer = "container:ofxARKit-12-example-face-tracking.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "example-face-tracking.app"
-            BlueprintName = "example-face-tracking"
-            ReferencedContainer = "container:example-face-tracking.xcodeproj">
+            BuildableName = "ofxARKit-12-example-face-tracking.app"
+            BlueprintName = "ofxARKit-12-example-face-tracking"
+            ReferencedContainer = "container:ofxARKit-12-example-face-tracking.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

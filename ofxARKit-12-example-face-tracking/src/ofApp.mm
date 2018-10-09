@@ -1,10 +1,12 @@
 #include "ofApp.h"
+using namespace ofxARKit::common;
+
 //--------------------------------------------------------------
 ofApp :: ofApp (ARSession * session){
     ARFaceTrackingConfiguration *configuration = [ARFaceTrackingConfiguration new];
-    
+
     [session runWithConfiguration:configuration];
-    
+
     this->session = session;
 }
 
@@ -29,9 +31,9 @@ void ofApp::setup() {
 
     processor = ARProcessor::create(session);
     processor->setup();
-    
+
     ofSetFrameRate(60);
-    
+
     verandaFont.load("fonts/verdana.ttf", 30);
 }
 
@@ -53,8 +55,8 @@ void drawEachTriangle(ofMesh faceMesh, float smileValue = 1) {
         auto face = uniqueFaces[i];
         // Three possible ways to color the face, try changing it up!
         ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue) * ofRandomuf(), 225, 200));
-//        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, 255 * ofNormalize(i, 0, uniqueFacesSize)));
-//        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, abs(face.getVertex(0).z) * 10 * 255));
+        //        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, 255 * ofNormalize(i, 0, uniqueFacesSize)));
+        //        ofSetColor(ofColor::fromHsb(smileValueTo255(smileValue), 255, abs(face.getVertex(0).z) * 10 * 255));
         ofDrawTriangle(face.getVertex(0), face.getVertex(1), face.getVertex(2));
     }
     ofPopStyle();
@@ -87,92 +89,93 @@ void ofApp::drawFaceMeshNormals(ofMesh mesh) {
 }
 
 void ofApp::printInfo() {
-    std::string infoString = std::string("Current mode: ") + std::string(bDrawTriangles ? "mesh triangles" : "circles");
+    std::string infoString;
+    infoString += "Smile to make the spheres larger, stick\nyour tongue out to change their color!\n";
+    infoString += std::string("Current mode: ") + std::string(bDrawTriangles ? "mesh triangles" : "circles");
     infoString += "\nNormals: " + std::string(bDrawNormals ? "on" : "off");
     infoString += std::string("\n\nTap right side of the screen to change drawing mode.");
     infoString += "\nTap left side of the screen to toggle normals.";
-//    infoString += "\n smile value: " + ofToString(smileValue);
-    verandaFont.drawString(infoString, 10, ofGetHeight() * 0.85);
+    infoString += "\nSmile value: " + ofToString(smileValue);
+
+    ofPushStyle();
+    ofSetColor(ofColor::white);
+    verandaFont.drawString(infoString, 10, ofGetHeight() * 0.8);
+    ofPopStyle();
 }
 
-void ofApp::drawEyeOrbs(FaceAnchorObject& face)
-{
+void ofApp::drawEyeOrbs(FaceAnchorObject& face) {
     glm::vec4 leftPupil{0, 0, 0, 1};
     glm::vec4 rightPupil{0, 0, 0, 1};
-    
+
     glm::vec4 leftDirection{0, 0, .2, 1};
     glm::vec4 rightDirection{0, 0, .2, 1};
-    
-    const auto leftEyeMat = ARCommon::toGlmMat4(face.raw.leftEyeTransform);
+
+    const auto leftEyeMat = toGlmMat4(face.raw.leftEyeTransform);
     leftPupil = leftEyeMat * leftPupil;
     leftDirection = leftEyeMat * leftDirection;
-    
-    const auto rightEyeMat = ARCommon::toGlmMat4(face.raw.rightEyeTransform);
+
+    const auto rightEyeMat = toGlmMat4(face.raw.rightEyeTransform);
     rightPupil = rightEyeMat * rightPupil;
     rightDirection = rightEyeMat * rightDirection;
-    
+
     auto vec4to3 = [](const glm::vec4& in)->glm::vec3
     {
         return glm::vec3{in.x, in.y, in.z};
     };
-    
+
     ofSetColor(ofColor::red);
     ofDrawLine(vec4to3(leftPupil), vec4to3(leftDirection));
     ofDrawLine(vec4to3(rightPupil), vec4to3(rightDirection));
-    
-    double tongueValue = face.getBlendShape(ARBlendShapeLocationTongueOut) * 255.0;
-    
+
+    tongueValue = face.getBlendShape(ARBlendShapeLocationTongueOut) * 255.0;
+    smileValue = (face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) + face.getBlendShape(ARBlendShapeLocationMouthSmileRight)) * 0.5;
+
     ofSetColor(ofColor(tongueValue, 1.0 - tongueValue, 0));
-    const double leftSphereSize = face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) * .02;
-    const double rightSphereSize = face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * .02;
+    const double leftSphereSize = minSphereSize + face.getBlendShape(ARBlendShapeLocationMouthSmileLeft) * .02;
+    const double rightSphereSize = minSphereSize + face.getBlendShape(ARBlendShapeLocationMouthSmileRight) * .02;
     ofDrawSphere(leftDirection, leftSphereSize);
     ofDrawSphere(rightDirection, rightSphereSize);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    
     ofDisableDepthTest();
     processor->draw();
-    
+
     camera.begin();
     processor->setARCameraMatrices();
 
     for (auto & face : processor->getFaces()){
         ofFill();
-        ofMatrix4x4 temp = ARCommon::toMat4(face.raw.transform);
+        ofMatrix4x4 temp = toMat4(face.raw.transform);
         ofPushMatrix();
         ofMultMatrix(temp);
-        
+
         mesh.addVertices(face.vertices);
         mesh.addTexCoords(face.uvs);
         mesh.addIndices(face.indices);
-        
+
         if (bDrawTriangles) {
             drawEachTriangle(mesh, smileValue);
         } else {
             drawFaceCircles(mesh, smileValue);
         }
-        
+
         if (bDrawNormals) {
             drawFaceMeshNormals(mesh);
         }
-        
+
         mesh.clear();
-        
-        drawEyeOrbs(face);
-        
-        ofPopMatrix();
-        
+
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.0")) {
-//            ofLog() << "lookAtPoint: " << ofToString(face.getLookAtPoint());
-//            ofPushStyle();
-//            ofSetColor(ofColor::red);
-//            ofDrawCircle(face.getLookAtPoint(), 0.1);
-//            ofPopStyle();
+            drawEyeOrbs(face);
         }
+
+        ofPopMatrix();
     }
     camera.end();
+
+    printInfo();
 }
 
 void ofApp::exit() {}
@@ -198,8 +201,7 @@ void ofApp::gotFocus(){}
 void ofApp::gotMemoryWarning(){}
 
 void ofApp::deviceOrientationChanged(int newOrientation){
-    processor->updateDeviceInterfaceOrientation();
-    processor->deviceOrientationChanged();
+    processor->deviceOrientationChanged(newOrientation);
 }
 
 void ofApp::touchCancelled(ofTouchEventArgs& args){}
